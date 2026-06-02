@@ -1,0 +1,11 @@
+discovery:
+  version: 1.x
+  css:
+    theme:
+      css/sage-discovery.css: {}
+  js:
+    https://cdn.jsdelivr.net/npm/marked/marked.min.js: { type: external, minified: true }
+    js/sage-discovery.js: {}
+  dependencies:
+    - core/drupal
+    - core/drupalSettings

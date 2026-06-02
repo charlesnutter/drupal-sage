@@ -1,0 +1,5 @@
+services:
+  sage_content_discovery.commands:
+    class: \Drupal\sage_content_discovery\Commands\SageDrushCommands
+    tags:
+      - { name: drush.command }

@@ -1,0 +1,8 @@
+global:
+  css:
+    theme:
+      dist/main.css: {}
+  js:
+    dist/main.js: { preprocess: false, minified: true }
+  dependencies:
+    - core/drupal

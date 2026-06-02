@@ -1,0 +1,120 @@
+{#
+/**
+ * @file
+ * SAGE Theme page template — full-height chatbot layout.
+ *
+ * Regions:
+ * - header:         Branding / logo block
+ * - navigation:     Primary nav links / dark mode toggle
+ * - highlighted:    System status messages
+ * - content:        Main page content (SAGE discovery form lives here)
+ * - sidebar_first:  Optional left panel (hidden on small screens)
+ * - sidebar_second: Optional right panel (hidden on smaller screens)
+ * - footer:         Minimal footer
+ */
+#}
+<div class="sage-page flex h-screen flex-col overflow-hidden bg-white text-gray-900 antialiased dark:bg-gray-950 dark:text-gray-100">
+
+  {# ── Header ─────────────────────────────────────────────── #}
+  <header class="sage-header flex h-14 shrink-0 items-center justify-between border-b border-gray-200 bg-white px-4 dark:border-gray-800 dark:bg-gray-950">
+
+    <div class="flex items-center gap-2">
+      {% if page.header %}
+        {{ page.header }}
+      {% else %}
+        <svg class="h-5 w-5 text-blue-500" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+          <circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/>
+        </svg>
+        <span class="text-sm font-semibold tracking-tight">SAGE Research</span>
+      {% endif %}
+    </div>
+
+    <div class="flex items-center gap-3">
+      {% if page.navigation %}
+        <nav aria-label="{{ 'Site navigation'|t }}">
+          {{ page.navigation }}
+        </nav>
+      {% endif %}
+
+      {# Dark mode toggle — JS binds to [data-sage-dark-toggle] #}
+      <button
+        data-sage-dark-toggle
+        type="button"
+        class="flex h-8 w-8 items-center justify-center rounded-lg text-gray-400 transition-colors hover:bg-gray-100 hover:text-gray-600 dark:text-gray-500 dark:hover:bg-gray-800 dark:hover:text-gray-300"
+        aria-label="{{ 'Toggle dark mode'|t }}"
+      >
+        {# Sun icon (shown in dark mode) #}
+        <svg class="hidden h-4 w-4 dark:block" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+          <circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M6.34 17.66l-1.41 1.41M19.07 4.93l-1.41 1.41"/>
+        </svg>
+        {# Moon icon (shown in light mode) #}
+        <svg class="block h-4 w-4 dark:hidden" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+          <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/>
+        </svg>
+      </button>
+    </div>
+
+  </header>
+
+  {# ── Highlighted / status messages ──────────────────────── #}
+  {% if page.highlighted %}
+    <div class="sage-highlighted shrink-0 border-b border-yellow-200 bg-yellow-50 px-4 py-3 dark:border-yellow-800/40 dark:bg-yellow-900/20">
+      {{ page.highlighted }}
+    </div>
+  {% endif %}
+
+  {# ── Body: optional sidebars + main content ──────────────── #}
+  <div class="sage-body flex flex-1 overflow-hidden">
+
+    {% if page.sidebar_first %}
+      <aside
+        class="sage-sidebar-first hidden w-64 shrink-0 overflow-y-auto border-r border-gray-200 bg-gray-50 lg:block dark:border-gray-800 dark:bg-gray-900"
+        aria-label="{{ 'Primary sidebar'|t }}"
+      >
+        {{ page.sidebar_first }}
+      </aside>
+    {% endif %}
+
+    <main
+      id="main-content"
+      class="sage-main flex flex-1 flex-col overflow-hidden"
+      tabindex="-1"
+    >
+      <div class="sage-chat">
+
+        {# Empty / welcome state — fades out once first message is sent #}
+        <div class="sage-empty-state" aria-hidden="true">
+          <span class="sage-empty-state__eyebrow">{{ 'SAGE Research'|t }}</span>
+          <h1 class="sage-empty-state__title">{{ 'What would you like to explore?'|t }}</h1>
+          <p class="sage-empty-state__subtitle">{{ 'Ask about people, events, places, and organizations across the collection.'|t }}</p>
+        </div>
+
+        {# Message scroll area — populated by JS #}
+        <div class="sage-chat__messages" aria-live="polite" aria-label="{{ 'Conversation'|t }}">
+          <div class="sage-chat__messages-inner" id="sage-transcript"></div>
+        </div>
+
+        {# Input area — rendered by the SAGE discovery form block #}
+        {{ page.content }}
+
+      </div>
+    </main>
+
+    {% if page.sidebar_second %}
+      <aside
+        class="sage-sidebar-second hidden w-72 shrink-0 overflow-y-auto border-l border-gray-200 bg-gray-50 xl:block dark:border-gray-800 dark:bg-gray-900"
+        aria-label="{{ 'Secondary sidebar'|t }}"
+      >
+        {{ page.sidebar_second }}
+      </aside>
+    {% endif %}
+
+  </div>
+
+  {% if page.footer %}
+    <footer class="sage-footer shrink-0 border-t border-gray-200 px-4 py-2 text-xs text-gray-400 dark:border-gray-800 dark:text-gray-600">
+      {{ page.footer }}
+    </footer>
+  {% endif %}
+
+</div>

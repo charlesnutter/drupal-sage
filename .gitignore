@@ -1,0 +1,35 @@
+# Drupal
+web/core/
+web/modules/contrib/
+web/themes/contrib/
+web/profiles/contrib/
+web/sites/default/settings.php
+web/sites/default/settings.ddev.php
+web/sites/*/files/
+vendor/
+
+# DDEV internals — generated at runtime, not needed in version control
+.ddev/.ddev-docker-compose-base.yaml
+.ddev/.ddev-docker-compose-full.yaml
+.ddev/.dbimageBuild/
+.ddev/.webimageBuild/
+.ddev/db_snapshots/
+.ddev/mutagen/
+.ddev/traefik/
+.ddev/.DS_Store
+
+# Python
+python_pipeline/.venv/
+python_pipeline/__pycache__/
+python_pipeline/*.pyc
+python_pipeline/sage_corpus_signals.json
+python_pipeline/sage_graph_config.json
+python_pipeline/pass*.pkl
+python_pipeline/sage_chunks_pass*.pkl
+
+# Theme build artefacts
+web/themes/custom/sage_theme/node_modules/
+web/themes/custom/sage_theme/package-lock.json
+
+# macOS
+.DS_Store

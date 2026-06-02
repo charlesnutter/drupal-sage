@@ -1,0 +1,617 @@
+/* ── Inter font (subset via Google Fonts) ──────────────────────
+   Must appear before all other rules (CSS @import requirement).
+   Replace with a local @font-face block if self-hosting is preferred.
+   ─────────────────────────────────────────────────────────────── */
+@import url("https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap");
+
+@import "tailwindcss";
+
+/*
+ * Class-based dark mode — .dark on <html> activates all dark: variants.
+ * Set server-side via theme settings, toggled client-side via JS.
+ */
+@custom-variant dark (&:is(.dark *));
+
+/* ── Design tokens ─────────────────────────────────────────────
+   Define semantic color aliases so light/dark swaps stay in one
+   place. Tailwind utilities handle the rest.
+   ─────────────────────────────────────────────────────────────── */
+@theme inline {
+  --font-sans: "Inter", ui-sans-serif, system-ui, -apple-system,
+    BlinkMacSystemFont, "Segoe UI", sans-serif;
+
+  /* Accent */
+  --color-accent:       oklch(0.546 0.245 262.881); /* blue-600  */
+  --color-accent-hover: oklch(0.488 0.243 264.376); /* blue-700  */
+}
+
+/* ── Semantic surface variables ────────────────────────────────
+   CSS custom properties for values Tailwind can't express
+   dynamically (gradients, transitions on bg-color, etc.).
+   ─────────────────────────────────────────────────────────────── */
+:root {
+  --surface-bg:     #ffffff;
+  --surface-raised: #f9fafb;
+  --surface-input:  #ffffff;
+  --border-subtle:  #e5e7eb;
+  --text-primary:   #111827;
+  --text-muted:     #6b7280;
+  --user-bubble-bg: #f3f4f6;
+  --scrollbar-thumb: #d1d5db;
+}
+
+.dark {
+  --surface-bg:     oklch(0.130 0.028 261.7);  /* gray-950 */
+  --surface-raised: oklch(0.178 0.031 261.7);  /* ~gray-900 */
+  --surface-input:  oklch(0.155 0.029 261.7);
+  --border-subtle:  oklch(0.278 0.033 256.8);  /* gray-800  */
+  --text-primary:   #f9fafb;
+  --text-muted:     #9ca3af;
+  --user-bubble-bg: oklch(0.210 0.034 264.7);  /* gray-900  */
+  --scrollbar-thumb: oklch(0.278 0.033 256.8);
+}
+
+/* ── Base resets ───────────────────────────────────────────────── */
+
+html, body {
+  height: 100%;
+  font-family: var(--font-sans);
+  background-color: var(--surface-bg);
+  color: var(--text-primary);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* Subtle custom scrollbar */
+* {
+  scrollbar-width: thin;
+  scrollbar-color: var(--scrollbar-thumb) transparent;
+}
+::-webkit-scrollbar { width: 6px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb {
+  background-color: var(--scrollbar-thumb);
+  border-radius: 3px;
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   PAGE SHELL
+   ═══════════════════════════════════════════════════════════════ */
+
+.sage-page {
+  background-color: var(--surface-bg);
+  color: var(--text-primary);
+}
+
+/* ── Header ────────────────────────────────────────────────────── */
+
+.sage-header {
+  background-color: var(--surface-bg);
+  border-bottom: 1px solid var(--border-subtle);
+}
+
+/* ── Sidebar ───────────────────────────────────────────────────── */
+
+.sage-sidebar-first,
+.sage-sidebar-second {
+  background-color: var(--surface-raised);
+  border-color: var(--border-subtle);
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   CHAT SHELL
+   .sage-chat wraps the scroll area + input.
+   .sage-chat--active is toggled by JS once the first message
+   is sent, hiding the empty state and showing messages.
+   ═══════════════════════════════════════════════════════════════ */
+
+.sage-chat {
+  @apply flex flex-col h-full;
+  padding-top: 2.5rem;
+}
+
+/* Before first message: center the empty-state + input as a group */
+.sage-chat:not(.sage-chat--active) {
+  justify-content: center;
+}
+
+/* ── Empty / welcome state ─────────────────────────────────────── */
+
+.sage-empty-state {
+  @apply flex flex-col items-center text-center px-6;
+  pointer-events: none;
+  margin-bottom: 2.5rem;
+  max-height: 600px;
+  overflow: hidden;
+  transition: opacity 0.3s ease, transform 0.3s ease,
+              max-height 0.45s cubic-bezier(0.4, 0, 0.2, 1),
+              margin-bottom 0.45s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.sage-chat--active .sage-empty-state {
+  opacity: 0;
+  transform: translateY(-10px);
+  max-height: 0;
+  margin-bottom: 0;
+  pointer-events: none;
+}
+
+.sage-empty-state__eyebrow {
+  @apply text-xs font-semibold uppercase tracking-widest mb-4;
+  color: var(--color-accent);
+}
+
+.sage-empty-state__title {
+  @apply text-3xl font-semibold mb-3 tracking-tight;
+  color: var(--text-primary);
+}
+
+.sage-empty-state__subtitle {
+  @apply text-base leading-relaxed max-w-lg;
+  color: var(--text-muted);
+}
+
+/* ── Message scroll area ───────────────────────────────────────── */
+
+.sage-chat__messages {
+  /* Collapsed out of flow until the first message is sent */
+  @apply overflow-hidden px-4;
+  flex: 0 0 0px;
+  opacity: 0;
+  pointer-events: none;
+  /* Opacity fades in slightly after the layout settles */
+  transition: opacity 0.35s ease 0.15s;
+}
+
+.sage-chat--active .sage-chat__messages {
+  flex: 1 1 0%;
+  overflow-y: auto;
+  overflow-x: hidden;
+  opacity: 1;
+  pointer-events: auto;
+  padding-top: 2rem;
+  padding-bottom: 1.5rem;
+}
+
+.sage-chat__messages-inner {
+  @apply mx-auto w-full max-w-3xl space-y-8;
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   MESSAGES  — flat, prose-style, no hard borders
+   ═══════════════════════════════════════════════════════════════ */
+
+.sage-message {
+  @apply flex flex-col gap-1;
+}
+
+/* User message — right-aligned flat pill */
+.sage-message--user {
+  @apply items-end;
+}
+
+.sage-message--user .sage-message__bubble {
+  @apply rounded-2xl rounded-br-sm px-4 py-2.5 text-base leading-relaxed;
+  @apply max-w-[78%] text-left;
+  background-color: var(--user-bubble-bg);
+  color: var(--text-primary);
+}
+
+/* Agent message — full-width, plain prose */
+.sage-message--agent .sage-message__bubble {
+  @apply w-full text-base leading-relaxed text-left;
+  color: var(--text-primary);
+}
+
+/* ── Bubble prose typography ───────────────────────────────────────
+   Scoped to .sage-message__bubble so these only affect rendered
+   markdown inside chat messages, not other UI elements.
+   Line-height 1.75 sits at the upper end of the WCAG-recommended
+   1.5× minimum and is widely cited as optimal for screen reading.
+   ─────────────────────────────────────────────────────────────── */
+
+.sage-message__bubble p {
+  margin-bottom: 0.875rem;
+  line-height: 1.75;
+}
+.sage-message__bubble p:last-child {
+  margin-bottom: 0;
+}
+
+.sage-message__bubble ul,
+.sage-message__bubble ol {
+  padding-left: 1.5rem;
+  margin-bottom: 0.875rem;
+}
+.sage-message__bubble ul { list-style-type: disc; }
+.sage-message__bubble ol { list-style-type: decimal; }
+
+.sage-message__bubble li {
+  margin-bottom: 0.4rem;
+  line-height: 1.75;
+}
+.sage-message__bubble li:last-child { margin-bottom: 0; }
+
+/* Nested lists */
+.sage-message__bubble li > ul,
+.sage-message__bubble li > ol {
+  margin-top: 0.35rem;
+  margin-bottom: 0;
+}
+
+.sage-message__bubble h1,
+.sage-message__bubble h2,
+.sage-message__bubble h3 {
+  font-weight: 600;
+  line-height: 1.35;
+  margin-top: 1.25rem;
+  margin-bottom: 0.5rem;
+}
+.sage-message__bubble h1 { font-size: 1.2rem; }
+.sage-message__bubble h2 { font-size: 1.1rem; }
+.sage-message__bubble h3 { font-size: 1rem; }
+.sage-message__bubble :first-child { margin-top: 0; }
+
+.sage-message__bubble strong { font-weight: 600; }
+.sage-message__bubble em     { font-style: italic; }
+
+.sage-message__bubble a {
+  color: var(--color-accent);
+  text-decoration: underline;
+  text-underline-offset: 2px;
+  text-decoration-thickness: 1px;
+}
+.sage-message__bubble a:hover { color: var(--color-accent-hover); }
+
+.sage-message__bubble code {
+  font-family: ui-monospace, "Cascadia Code", "Fira Mono", monospace;
+  font-size: 0.875em;
+  background-color: var(--surface-raised);
+  border: 1px solid var(--border-subtle);
+  padding: 0.1em 0.35em;
+  border-radius: 0.25rem;
+}
+
+.sage-message__bubble pre {
+  background-color: var(--surface-raised);
+  border: 1px solid var(--border-subtle);
+  border-radius: 0.625rem;
+  padding: 0.875rem 1rem;
+  overflow-x: auto;
+  margin-bottom: 0.875rem;
+}
+.sage-message__bubble pre code {
+  background: none;
+  border: none;
+  padding: 0;
+  font-size: 0.875rem;
+}
+
+.sage-message__bubble blockquote {
+  border-left: 3px solid var(--border-subtle);
+  padding-left: 1rem;
+  margin-left: 0;
+  margin-bottom: 0.875rem;
+  color: var(--text-muted);
+  font-style: italic;
+}
+
+/* Optional sender label */
+.sage-message__label {
+  @apply text-xs font-medium mb-0.5 px-1;
+  color: var(--text-muted);
+}
+
+.sage-message--user .sage-message__label {
+  @apply text-right;
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   RESULT CARDS
+   ═══════════════════════════════════════════════════════════════ */
+
+.sage-results {
+  @apply mt-4 space-y-2.5;
+}
+
+.sage-result-card {
+  @apply block rounded-xl px-4 py-3.5 text-sm transition-colors cursor-pointer;
+  background-color: var(--surface-raised);
+  border: 1px solid var(--border-subtle);
+}
+
+.sage-result-card:hover {
+  border-color: var(--color-accent);
+}
+
+.sage-result-card__title {
+  @apply font-medium mb-1;
+  color: var(--color-accent);
+}
+
+.sage-result-card__title:hover {
+  color: var(--color-accent-hover);
+}
+
+.sage-result-card__summary {
+  @apply leading-snug;
+  color: var(--text-muted);
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   SEARCH SUGGESTION CHIPS
+   ═══════════════════════════════════════════════════════════════ */
+
+.sage-suggestions-label {
+  @apply text-xs font-medium mt-5 mb-0.5;
+  color: var(--text-muted);
+}
+
+.sage-suggestions-desc {
+  @apply text-xs mb-2;
+  color: var(--text-muted);
+  opacity: 0.75;
+}
+
+.sage-suggestions {
+  @apply flex flex-wrap gap-2;
+}
+
+.sage-suggestion-link {
+  @apply inline-flex items-center rounded-full px-3 py-1 text-xs transition-colors;
+  border: 1px solid var(--border-subtle);
+  color: var(--text-muted);
+}
+
+.sage-suggestion-link:hover {
+  border-color: var(--color-accent);
+  color: var(--color-accent);
+  background-color: oklch(from var(--color-accent) l c h / 0.06);
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   INPUT AREA  — bottom-pinned, centered, clean
+   ═══════════════════════════════════════════════════════════════ */
+
+.sage-input-area {
+  @apply shrink-0 px-4 pb-6 pt-5;
+  background-color: var(--surface-bg);
+}
+
+/* Border, shadow, and upward fade once the footer is pinned at the bottom */
+.sage-chat--active .sage-input-area {
+  border-top: 1px solid var(--border-subtle);
+  /* Project the background colour upward so messages dissolve before the border */
+  box-shadow: 0 -24px 24px 8px var(--surface-bg);
+}
+
+.sage-input-area__inner {
+  @apply mx-auto w-full max-w-3xl;
+}
+
+/* Filters row above the input */
+.sage-filters {
+  @apply flex flex-wrap items-center gap-2 mb-2.5;
+}
+
+.sage-filter-label {
+  @apply text-xs font-medium;
+  color: var(--text-muted);
+}
+
+.sage-filter-select {
+  @apply rounded-lg px-2.5 py-1.5 text-xs transition-colors focus:outline-none;
+  border: 1px solid var(--border-subtle);
+  background-color: var(--surface-input);
+  color: var(--text-primary);
+}
+
+.sage-filter-select:focus {
+  border-color: var(--color-accent);
+  box-shadow: 0 0 0 2px oklch(from var(--color-accent) l c h / 0.15);
+}
+
+/* ── Entity-type multi-select dropdown ─────────────────────────── */
+
+.sage-multiselect {
+  position: relative;
+}
+
+.sage-multiselect__toggle {
+  @apply flex items-center gap-1.5 cursor-pointer;
+}
+
+.sage-multiselect__arrow {
+  flex-shrink: 0;
+  transition: transform 0.15s ease;
+}
+
+.sage-multiselect__toggle[aria-expanded="true"] .sage-multiselect__arrow {
+  transform: rotate(180deg);
+}
+
+.sage-multiselect__dropdown {
+  position: absolute;
+  top: calc(100% + 0.375rem);
+  left: 0;
+  z-index: 50;
+  min-width: 11rem;
+  padding: 0.375rem;
+  border-radius: 0.75rem;
+  border: 1px solid var(--border-subtle);
+  background-color: var(--surface-input);
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+}
+
+.dark .sage-multiselect__dropdown {
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.35);
+}
+
+.sage-multiselect__option {
+  @apply flex items-center gap-2.5 rounded-lg px-3 py-2 text-xs cursor-pointer select-none;
+  color: var(--text-primary);
+  transition: background-color 0.1s ease;
+}
+
+.sage-multiselect__option:hover {
+  background-color: var(--surface-raised);
+}
+
+.sage-multiselect__check {
+  flex-shrink: 0;
+  width: 0.875rem;
+  height: 0.875rem;
+  accent-color: var(--color-accent);
+  cursor: pointer;
+}
+
+/* The input wrapper — relative so the send button can sit in the top-right corner */
+.sage-input-wrap {
+  @apply rounded-2xl px-4 pt-3 pb-3;
+  position: relative;
+  border: 1px solid var(--border-subtle);
+  background-color: var(--surface-input);
+  transition: border-color 0.15s ease, box-shadow 0.15s ease;
+}
+
+.sage-input-wrap:focus-within {
+  border-color: var(--color-accent);
+  box-shadow: 0 0 0 3px oklch(from var(--color-accent) l c h / 0.12);
+}
+
+.sage-textarea {
+  @apply block w-full resize-none bg-transparent text-sm leading-relaxed focus:outline-none;
+  color: var(--text-primary);
+  min-height: 5rem;
+  max-height: 15rem;
+  /* Right padding keeps text from sliding under the button */
+  padding-right: 2.75rem;
+}
+
+.sage-textarea::placeholder {
+  color: var(--text-muted);
+}
+
+.sage-submit-btn {
+  @apply flex h-8 w-8 items-center justify-center rounded-xl transition-colors;
+  position: absolute;
+  top: 0.75rem;
+  right: 0.75rem;
+  background-color: var(--color-accent);
+  color: #fff;
+  cursor: pointer;
+}
+
+.sage-submit-btn:hover {
+  background-color: var(--color-accent-hover);
+}
+
+.sage-submit-btn:disabled {
+  @apply cursor-not-allowed opacity-40;
+}
+
+/* Hint text below input */
+.sage-input-hint {
+  @apply mt-2 text-center text-xs;
+  color: var(--text-muted);
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   TYPING INDICATOR
+   ═══════════════════════════════════════════════════════════════ */
+
+.sage-typing {
+  @apply flex w-fit items-center gap-1.5 py-1;
+}
+
+.sage-typing span {
+  @apply h-1.5 w-1.5 rounded-full;
+  background-color: var(--text-muted);
+  animation: sage-bounce 1.2s infinite ease-in-out;
+}
+
+.sage-typing span:nth-child(2) { animation-delay: 0.15s; }
+.sage-typing span:nth-child(3) { animation-delay: 0.30s; }
+
+@keyframes sage-bounce {
+  0%, 60%, 100% { transform: translateY(0);    opacity: 0.5; }
+  30%            { transform: translateY(-5px); opacity: 1;   }
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   COLLECTION SAVED NOTICE
+   ═══════════════════════════════════════════════════════════════ */
+
+.sage-collection-notice {
+  @apply inline-flex items-center gap-2 rounded-xl px-4 py-3 text-sm;
+  border: 1px solid;
+  border-color: oklch(0.527 0.154 150.069 / 0.4); /* green-700/40 */
+  background-color: oklch(0.982 0.018 155.826 / 0.5);
+  color: oklch(0.527 0.154 150.069);
+}
+
+.dark .sage-collection-notice {
+  background-color: oklch(0.393 0.095 152.535 / 0.15);
+  color: oklch(0.792 0.209 151.711);
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   DARK MODE TOGGLE BUTTON  (in header)
+   ═══════════════════════════════════════════════════════════════ */
+
+.sage-dark-toggle {
+  @apply flex h-8 w-8 items-center justify-center rounded-lg transition-colors;
+  color: var(--text-muted);
+}
+
+.sage-dark-toggle:hover {
+  background-color: var(--surface-raised);
+  color: var(--text-primary);
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   DRUPAL SYSTEM MESSAGES
+   ═══════════════════════════════════════════════════════════════ */
+
+.messages--status,
+.messages--warning,
+.messages--error {
+  @apply rounded-xl px-4 py-3 text-sm;
+  border: 1px solid;
+}
+
+.messages--status {
+  border-color: #bbf7d0;
+  background-color: #f0fdf4;
+  color: #15803d;
+}
+
+.messages--warning {
+  border-color: #fde68a;
+  background-color: #fffbeb;
+  color: #b45309;
+}
+
+.messages--error {
+  border-color: #fecaca;
+  background-color: #fef2f2;
+  color: #b91c1c;
+}
+
+.dark .messages--status {
+  border-color: oklch(0.393 0.095 152.535 / 0.3);
+  background-color: oklch(0.393 0.095 152.535 / 0.1);
+  color: oklch(0.792 0.209 151.711);
+}
+
+.dark .messages--warning {
+  border-color: oklch(0.421 0.095 57.708 / 0.3);
+  background-color: oklch(0.421 0.095 57.708 / 0.1);
+  color: oklch(0.795 0.184 86.047);
+}
+
+.dark .messages--error {
+  border-color: oklch(0.396 0.141 25.723 / 0.3);
+  background-color: oklch(0.396 0.141 25.723 / 0.1);
+  color: oklch(0.704 0.191 22.216);
+}

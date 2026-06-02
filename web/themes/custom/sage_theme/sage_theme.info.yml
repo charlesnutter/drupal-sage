@@ -1,0 +1,27 @@
+name: 'SAGE Theme'
+type: theme
+description: 'Vite + Tailwind CSS v4 chatbot-layout theme for the SAGE Content Discovery tool.'
+package: 'SAGE'
+core_version_requirement: ^10 || ^11
+base theme: false
+
+libraries:
+  - sage_theme/global
+
+regions:
+  header: 'Header'
+  navigation: 'Navigation'
+  highlighted: 'Highlighted'
+  content: 'Content'
+  sidebar_first: 'Sidebar First'
+  sidebar_second: 'Sidebar Second'
+  footer: 'Footer'
+
+features:
+  - logo
+  - favicon
+  - main_menu
+  - secondary_menu
+
+settings:
+  dark_mode: 0

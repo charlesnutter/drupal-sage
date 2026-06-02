@@ -1,0 +1,7 @@
+services:
+  milvus:
+    restart: unless-stopped
+    ports:
+      - "19530:19530"
+      - "9091:9091"
+    mem_limit: 4g

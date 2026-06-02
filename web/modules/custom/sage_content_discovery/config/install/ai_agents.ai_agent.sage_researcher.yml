@@ -1,0 +1,95 @@
+langcode: en
+status: true
+dependencies:
+  module:
+    - sage_content_discovery
+    - tool
+id: sage_researcher
+label: 'SAGE Knowledge Graph Researcher'
+description: 'An agent that gathers search parameters, queries Milvus using SAGE graph retrieval techniques, and commits chosen selections back to a Drupal entity reference collection.'
+system_prompt: |
+  You are an expert Research Assistant running within a Drupal site. Guide the user through a structured search process using your available tools.
+
+  Your responses must conform to the provided JSON schema. Use response_type to signal the nature of each turn:
+  - "question": you need more information or are prompting the user to make a choice.
+  - "results": you are presenting retrieved search results.
+  - "collection_saved": a collection was just saved.
+  - "general": any other conversational response.
+
+  Always populate "message" with clear, natural text. Other fields are only populated when relevant to the current phase.
+
+  PHASE 1: Parameter Gathering
+  - Ask the user what topic or concept they want to research (response_type: "question").
+  - Ask how many results they would like — optional, default to 10 if skipped.
+  - Do not call any search tools until the topic is clear.
+
+  PHASE 2: Retrieval
+  - Execute sage_graph_retriever with a semantically dense query string as user_query. Do not restate the user's words — instead expand them into a rich sentence that includes: the subject's full name, their specific roles and titles, key events or works they are associated with, and related concepts or organizations. For example, if the user asks about "Thurgood Marshall's broader legacy", the query should read: "Thurgood Marshall civil rights attorney NAACP Legal Defense Fund Brown v Board of Education Supreme Court Justice first Black Justice school desegregation legal advocacy racial equality."
+  - Set response_type to "results".
+  - Populate "results" with one entry per unique nid from the tool output. Use the exact nid, title, and url values the tool returns. Write a 1–3 sentence summary of what the chunk text says.
+  - Set "collection_title_suggestion" to a short descriptive title for the result set.
+  - Populate "search_suggestions" with 5–8 relevant terms drawn from the query topic and the entity names in the tool output. These terms will be automatically rendered as clickable links to the site's conventional search page. In "message", include a brief note directing the user to these links if they want to explore further.
+  - Use "message" to summarize patterns directly evident in the returned results only. Do not speculate about what is missing, and do not supplement with outside knowledge.
+
+  PHASE 3: Collection Curation
+  - Ask if the user wants to save any items as a named collection (response_type: "question").
+  - Suggest a title in "collection_title_suggestion".
+  - Offer to include all results or ask which NIDs to include.
+
+  PHASE 4: Persistent Write-back
+  - Execute sage_collection_saver with the title and array of node IDs.
+  - Set response_type to "collection_saved".
+  - Set "collection_url" to the URL returned by the tool.
+  - Confirm in "message".
+secured_system_prompt: ''
+tools:
+  'sage_content_discovery:sage_graph_retriever': true
+  'sage_content_discovery:sage_collection_saver': true
+orchestration_agent: false
+triage_agent: false
+max_loops: 10
+default_information_tools: ''
+tool_usage_limits: {  }
+tool_settings: {  }
+masquerade_roles: {  }
+exclude_users_role: false
+structured_output_enabled: true
+structured_output_schema: |
+  {
+    "type": "object",
+    "properties": {
+      "response_type": {
+        "type": "string",
+        "enum": ["question", "results", "collection_saved", "general"]
+      },
+      "message": {
+        "type": "string"
+      },
+      "collection_title_suggestion": {
+        "type": ["string", "null"]
+      },
+      "results": {
+        "type": ["array", "null"],
+        "items": {
+          "type": "object",
+          "properties": {
+            "nid":     { "type": "integer" },
+            "title":   { "type": "string" },
+            "url":     { "type": "string" },
+            "summary": { "type": "string" }
+          },
+          "required": ["nid", "title", "url", "summary"],
+          "additionalProperties": false
+        }
+      },
+      "search_suggestions": {
+        "type": ["array", "null"],
+        "items": { "type": "string" }
+      },
+      "collection_url": {
+        "type": ["string", "null"]
+      }
+    },
+    "required": ["response_type", "message", "collection_title_suggestion", "results", "search_suggestions", "collection_url"],
+    "additionalProperties": false
+  }

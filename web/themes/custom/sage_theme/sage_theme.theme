@@ -1,0 +1,27 @@
+<?php
+
+declare(strict_types=1);
+
+/**
+ * @file
+ * Functions to support theming in the SAGE Theme.
+ */
+
+/**
+ * Implements hook_preprocess_HOOK() for html.html.twig.
+ *
+ * Adds the 'dark' class to <html> when dark mode is enabled in theme settings,
+ * activating all Tailwind dark: utility variants site-wide.
+ */
+function sage_theme_preprocess_html(array &$variables): void {
+  if (!empty(theme_get_setting('dark_mode'))) {
+    $variables['html_attributes']->addClass('dark');
+  }
+}
+
+/**
+ * Implements hook_preprocess_HOOK() for page.html.twig.
+ */
+function sage_theme_preprocess_page(array &$variables): void {
+  $variables['dark_mode'] = !empty(theme_get_setting('dark_mode'));
+}

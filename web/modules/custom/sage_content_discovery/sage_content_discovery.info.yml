@@ -1,0 +1,9 @@
+name: 'SAGE Knowledge Graph Integration'
+type: module
+description: 'Operationalizes Structure Aware Graph Expansion (SAGE) with Milvus vector search and Google embedding.'
+package: AI
+core_version_requirement: ^10 || ^11
+dependencies:
+  - ai:ai
+  - ai_agents:ai_agents
+  - key:key

@@ -1,0 +1,27 @@
+/*
+ * Drupal layout resets — strip padding/max-width from the page wrapper so
+ * the full-height theme layout can fill the viewport cleanly.
+ */
+.path-sage-discover .layout-container,
+.path-sage-discover .layout-main-wrapper,
+.path-sage-discover .layout-main {
+  max-width: 100%;
+  padding: 0;
+  margin: 0;
+}
+
+.path-sage-discover main {
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+}
+
+/* Strip Drupal's default form-item margins inside the input area. */
+.sage-input-area .form-item {
+  margin: 0;
+}
+
+/* Prevent Drupal's form wrapper from adding layout constraints. */
+.sage-discovery-form {
+  display: contents;
+}

@@ -1,0 +1,23 @@
+sage_content_discovery.export:
+  path: '/api/sage/export'
+  defaults:
+    _controller: '\Drupal\sage_content_discovery\Controller\SageExportController::exportData'
+  requirements:
+    _permission: 'access content'
+
+sage_content_discovery.discovery:
+  path: '/sage/discover'
+  defaults:
+    _form: '\Drupal\sage_content_discovery\Form\SageDiscoveryForm'
+    _title: 'SAGE Content Discovery'
+  requirements:
+    _permission: 'access content'
+
+sage_content_discovery.chat:
+  path: '/sage/chat'
+  defaults:
+    _controller: '\Drupal\sage_content_discovery\Controller\SageDiscoveryChatController::chat'
+    _title: ''
+  requirements:
+    _permission: 'access content'
+  methods: [POST]
