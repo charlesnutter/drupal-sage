@@ -79,7 +79,7 @@ ENTITY_TYPES = {"PERSON", "ORG", "GPE", "EVENT", "NORP", "FAC", "LOC"}
 
 # ── Service endpoints ──────────────────────────────────────────────────────────
 MILVUS_URI        = "http://localhost:19530"               # Milvus REST endpoint (DDEV)
-DRUPAL_EXPORT_URL = "https://YOUR-DDEV-SITE.ddev.site/api/sage/export" # Drupal node export endpoint
+DRUPAL_EXPORT_URL = os.getenv("DRUPAL_EXPORT_URL", "https://YOUR-SITE.ddev.site/api/sage/export")
 
 # ── Google embedding configuration ────────────────────────────────────────────
 GOOGLE_API_KEY    = os.getenv("GOOGLE_API_KEY", "")

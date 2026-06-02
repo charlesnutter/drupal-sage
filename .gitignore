@@ -31,5 +31,17 @@ python_pipeline/sage_chunks_pass*.pkl
 web/themes/custom/sage_theme/node_modules/
 web/themes/custom/sage_theme/package-lock.json
 
+# DDEV local config — contains API keys; see .ddev/config.local.yaml.example
+.ddev/config.local.yaml
+.ddev/mutagen.yml
+.ddev/addon-metadata/
+
 # macOS
 .DS_Store
+
+# Project-specific local artifacts
+db.sql.gz
+*.zip
+.claude/
+SAGE_conversation_export.md
+SAGE_presentation.md
