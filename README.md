@@ -7,7 +7,7 @@ When it's working correctly, it should
 - Provide friend-of-a-friend, multi-hop retrieval by comparing word overlap, edge types, reranking, chunks in the neighborhood, and weighted keywords that cater to both phrases and specific terms.
 - Improve the quality of initial searches; provides context for the search results without relying on the inference model to generate one, limiting hallucinations.
 - Adhere to a basic RAG approach. Results come from your data.
-- Allow me to pretend that I understand what neurosymbolic AI, even though this isn't it.
+- Allow me to pretend that I understand what neurosymbolic AI means, even though this isn't it.
 
 ## What it is
 
