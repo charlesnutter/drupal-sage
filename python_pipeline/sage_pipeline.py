@@ -1302,3 +1302,5 @@ if __name__ == "__main__":
         run_incremental_sync(args.nid)
     else:
         run_full_sync(resume=args.resume, skip_index=args.skip_index)
+
+""" God keep me from ever completing anything. - Herman Melville """
