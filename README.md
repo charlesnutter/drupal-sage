@@ -1,6 +1,6 @@
-# A Structure Aware Graph Expansion (SAGE) RAG setup Proof of Concept.
+# (WIP) A Structure Aware Graph Expansion (SAGE) RAG Search Proof of Concept.
 
-A Drupal 11 module and theme implementing a knowledge-graph-augmented AI chat interface for content discovery. This isn't a grab-and-go repo, but a POC for how a thematic corpus can leverage a knowledge graph to provide more relevant results, explain the context of the result set, and lower dependence on the inference model.
+A reference Drupal 11 module and theme implementing a knowledge-graph-augmented AI chat interface for content discovery. This isn't a grab-and-go repo, but a POC for how a thematic corpus can leverage a knowledge graph to provide more relevant results, explain the context of the result set, and lower dependence on the inference model.
 
 When it's working correctly, it should
 - Reduce token use by front-loading the semantics. Flat retrieval into structured retrieval does the thinking for you.
@@ -15,7 +15,7 @@ The pipeline builds a semantic knowledge graph from Drupal node content using Go
 
 ## What it isn't
 
-This isn't GraphRAG. The structured data attempts to contextualize thematic data into structured relationships. There's no ontologies or triplets
+This isn't GraphRAG. The structured data attempts to contextualize thematic data into structured relationships. There's no ontologies or triplets to be found.
 
 This setup was meant for DDEV and not production. DDEV is wired to Python on your host machine via endpoint to bypass DDEVs container limitations. If it's on managed hosting it'll need a sidecar to populate the DB or run the pipeline via a cloud API.
 
