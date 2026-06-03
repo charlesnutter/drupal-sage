@@ -1,7 +1,6 @@
 # (WIP) A Structure Aware Graph Expansion (SAGE) RAG search tool Proof of Concept.
-# Reference only
 
-A Drupal 11 module and theme implementing a knowledge-graph-augmented AI chat interface for content discovery. This isn't a grab-and-go repo, but a POC for how a thematic corpus can leverage a knowledge graph to provide more relevant results, explain the context of the result set, and lower dependence on the inference model.
+A reference Drupal 11 module and theme implementing a knowledge-graph-augmented AI chat interface for content discovery. This isn't a grab-and-go repo, but a POC for how a thematic corpus can leverage a knowledge graph to provide more relevant results, explain the context of the result set, and lower dependence on the inference model.
 
 When it's working correctly, it should
 - Reduce token use by front-loading the semantics. Flat retrieval into structured retrieval does the thinking for you.
