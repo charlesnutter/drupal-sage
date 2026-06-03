@@ -145,6 +145,6 @@ Here's the repo that inspired the work— I cribbed the initial logic from their
 
 If you're looking for more information on structured RAG retrieval, check out GraphRAG and the tenets of Neurosybolic AI.
 
-If you're looking for my a thought leader in AI, follow [Gary Marcus](https://x.com/garymarcus).
+If you're looking for a thought leader in AI, follow [Gary Marcus](https://x.com/garymarcus).
 
 If you're looking to be disappointed, follow the Mets.
